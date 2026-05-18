@@ -339,27 +339,31 @@ public class GameManager : NetworkManager<GameManager>, IGameManager
             _triggerTimerCoroutines[myTeam] = StartCoroutine(RespawnCoroutine(myTeam, respawnPos));
         }
 
-        // 점수
-        switch(enemy) 
-        {   // ToDo. Playable 유닛에 따라 점수 판정이 달라 짐. 추후 구현.
-            case PlayerTeamEnum.firstTeam:
-                _team1Score.Value += 1;
-                break;
-            case PlayerTeamEnum.secondTeam:
-                _team2Score.Value += 1;
-                break;
-            case PlayerTeamEnum.thirdTeam:
-                _team3Score.Value += 1;
-                break;
-            case PlayerTeamEnum.fourthTeam:
-                _team4Score.Value += 1;
-                break;
+        if (myTeam != enemy)
+        {
+            // 점수
+            switch(enemy) 
+            {   // ToDo. Playable 유닛에 따라 점수 판정이 달라 짐. 추후 구현.
+                case PlayerTeamEnum.firstTeam:
+                    _team1Score.Value += 1;
+                    break;
+                case PlayerTeamEnum.secondTeam:
+                    _team2Score.Value += 1;
+                    break;
+                case PlayerTeamEnum.thirdTeam:
+                    _team3Score.Value += 1;
+                    break;
+                case PlayerTeamEnum.fourthTeam:
+                    _team4Score.Value += 1;
+                    break;
+            }
+            string scoreStringData = $"{_team1Score.Value},{_team2Score.Value},{_team3Score.Value},{_team4Score.Value}";
+            OnChangeScore?.Invoke(scoreStringData);
+            // 킬로그 호출
+            OnKillLog?.Invoke(myTeam, enemy);
         }
-        string scoreStringData = $"{_team1Score.Value},{_team2Score.Value},{_team3Score.Value},{_team4Score.Value}";
-        OnChangeScore?.Invoke(scoreStringData);
-    
-        // 킬로그 호출
-        OnKillLog?.Invoke(myTeam, enemy);
+        
+        
         Debug.Log("[GameManager] OnDestoryVehicleServerRpc ... Done");
     }
 
